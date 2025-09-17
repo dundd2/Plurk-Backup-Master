@@ -96,7 +96,28 @@ Get 取得
 
     python main.py username1 username2 username3
 
-`username` 就是網址 http://www.plurk.com/使用者帳號 的 `使用者帳號` 
+`username` 就是網址 http://www.plurk.com/使用者帳號 的 `使用者帳號`
 `username` is the `user account` in the URL http://www.plurk.com/user_account
 
 Replace username1, username2, etc., with the Plurk usernames whose images and messages you want to download.
+
+## Graphical Interface 液態玻璃風格圖形介面 (Current UI: v1.2.0)
+
+本專案提供液態玻璃風格的桌面介面，讓您以視覺化方式設定 API 金鑰並監看備份流程。
+
+### New in v1.2.0
+- 介面頂端顯示當前版本號並提供直接連結到作者的 [GitHub](https://github.com/dundd2)。
+- 支援繁體中文 / English 語言切換，所有提示與訊息會即時更新。
+- 玻璃質感資訊列保留備份進度與警示狀態，搭配多語系提示更直覺。
+
+1. 安裝專案需求套件：`pip install -r requirements.txt`
+2. 於專案根目錄執行：
+
+       python ui_app.py
+
+3. 依序填寫 Consumer Key、Consumer Secret、Access Token、Access Token Secret 與欲備份的 Plurk 使用者。
+4. 按下「開始備份」按鈕即可啟動備份流程，進度條與狀態徽章會同步顯示執行狀態。
+5. 可勾選「備份完成後自動開啟資料夾」快速檢視備份成果，或利用「重設欄位」重新輸入資訊。
+6. 頂部語言選單可切換至 English 介面，並可從同一列點擊 GitHub 連結取得最新資訊。
+
+The glassmorphism inspired interface is available by launching `python ui_app.py` from the project root. Fill in the API credentials, list the Plurk usernames you wish to archive, and click **Start Backup / 開始備份** to begin. Use the top language switcher to flip between Traditional Chinese and English, and follow the GitHub link for the latest updates.
