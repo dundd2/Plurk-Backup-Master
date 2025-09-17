@@ -4,3 +4,4 @@ aiomultiprocess
 base36
 plurk_oauth
 python-dotenv
+PySide6
