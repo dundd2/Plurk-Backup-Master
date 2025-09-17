@@ -8,54 +8,9 @@ Easily download all Plurks images, messages and replies posted by a specific Plu
 ![1](https://github.com/user-attachments/assets/91ac9c4f-1701-4eb3-8e32-b48544d7eff9)
 
 
-## V1.1 28/NOV/2024 Changes Made 更新內容 
-
-1. Code Structure Changes 程式碼結構變更:
-   - Separated utility functions into utils.py
-   - Improved code organization and modularity
-   - Removed duplicate functions
-
-2. Performance Improvements 效能改進:
-   - Optimized async/await implementation
-   - Better error handling in URL validation
-   - Improved session management
-
-3. Features Added 新增功能:
-   - Added text content saving for both plurks and responses
-   - Better file naming convention for saved content
-   - Enhanced logging of download status
-
-4. Bug Fixes 錯誤修正:
-   - Fixed URL validation regex pattern
-   - Improved error handling in API calls
-   - Fixed duplicate downloads issues
-   - Better handling of timeouts and connection errors
-
-5. File Organization 檔案組織:
-   - Moved from single file to modular structure
-   - Created a separate utility module
-   - Better separation of concerns
-
-
-## Acknowledgment 致謝 
-
-Most of this project is based on the original Plurk Crawler by [freelze](https://github.com/freelze). I express my sincere thanks to freelze for their contribution to the Plurk Crawler project.
-
-本專案大部分基於 [freelze](https://github.com/freelze) 原始的 Plurk Crawler。我衷心感謝 freelze 對 Plurk Crawler 專案的貢獻。
-
-I edited the code using ChatGPT so that the script can now download all images, messages, and replies (including images and messages in the replies below) not just only download images in the Plurk Crawler.
-
-我使用 ChatGPT 編輯了程式碼，讓腳本現在可以下載所有文字訊息和圖片，包括回覆中的圖片和文字訊息，而不僅僅是 Plurk Crawler 中的圖片。
-
-## Disclaimer 免責聲明 (Disclaimer)
-
-I want to clarify that I do not own any of the code in this project. This project is based on the original Plurk Crawler by [freelze](https://github.com/freelze), and ChatGPT enhances it.
-
-我想澄清的是，我並不擁有本專案中的任何程式碼。這個專案大部分基於 [freelze](https://github.com/freelze) 的原始 Plurk Crawler，我使用 ChatGPT /GitHub Copilot 編輯。
-
 ## Getting Started 前置作業 
 
-### Install Python 3.12+ 安裝 Python 3.12+ 
+### Install Python 3.11+ 安裝Python 3.11+
 ### Clone the repository 下載程式碼 
 
     git clone https://github.com/dundd2/Plurk-Backup-Master.git
@@ -94,30 +49,79 @@ Get 取得
 
 # Run the script: 執行程式
 
-    python main.py username1 username2 username3
+There are three ways to download a user's Plurks (images, messages and replies):
 
-`username` 就是網址 http://www.plurk.com/使用者帳號 的 `使用者帳號`
-`username` is the `user account` in the URL http://www.plurk.com/user_account
+有三種方式可下載使用者的 Plurk（包含圖像、訊息與回覆）：
 
-Replace username1, username2, etc., with the Plurk usernames whose images and messages you want to download.
+1) Graphical interface (recommended for most users) / 圖形介面（大多數使用者推薦）
 
-## Graphical Interface 液態玻璃風格圖形介面 (Current UI: v1.2.0)
+   - Run the GUI that provides a simple form, progress bar and status badges:
 
-本專案提供液態玻璃風格的桌面介面，讓您以視覺化方式設定 API 金鑰並監看備份流程。
+     執行圖形化介面，介面包含簡單的表單、進度條與狀態徽章：
 
-### New in v1.2.0
-- 介面頂端顯示當前版本號並提供直接連結到作者的 [GitHub](https://github.com/dundd2)。
-- 支援繁體中文 / English 語言切換，所有提示與訊息會即時更新。
-- 玻璃質感資訊列保留備份進度與警示狀態，搭配多語系提示更直覺。
+      python ui_app.py
 
-1. 安裝專案需求套件：`pip install -r requirements.txt`
-2. 於專案根目錄執行：
+   - Fill in the API credentials and the Plurk usernames to back up, then click **Start Backup / 開始備份**.
 
-       python ui_app.py
+     在介面中填入 API 金鑰與欲備份的 Plurk 使用者名稱，然後按下 **Start Backup / 開始備份**。
 
-3. 依序填寫 Consumer Key、Consumer Secret、Access Token、Access Token Secret 與欲備份的 Plurk 使用者。
-4. 按下「開始備份」按鈕即可啟動備份流程，進度條與狀態徽章會同步顯示執行狀態。
-5. 可勾選「備份完成後自動開啟資料夾」快速檢視備份成果，或利用「重設欄位」重新輸入資訊。
-6. 頂部語言選單可切換至 English 介面，並可從同一列點擊 GitHub 連結取得最新資訊。
+2) Command-line with usernames (non-interactive) / 命令列指定使用者（非互動）
 
-The glassmorphism inspired interface is available by launching `python ui_app.py` from the project root. Fill in the API credentials, list the Plurk usernames you wish to archive, and click **Start Backup / 開始備份** to begin. Use the top language switcher to flip between Traditional Chinese and English, and follow the GitHub link for the latest updates.
+   - Provide one or more usernames as command-line arguments. This is useful for scripting or running in a terminal:
+
+     在命令列中提供一個或多個使用者名稱，可用於腳本化或在終端機中執行：
+
+      python main.py username1 username2 username3
+
+   - Example:
+
+     範例：
+
+      python main.py alice bob charlie
+
+   - `username` is the `user account` in the URL `http://www.plurk.com/user_account`.
+
+     `username` 是出現在 `http://www.plurk.com/user_account` 中的使用者帳號。
+
+3) Run `main.py` directly (interactive prompt) / 直接執行 `main.py`（互動式）
+
+   - Run the script without arguments and it will prompt you to enter one or more usernames:
+
+     不帶參數執行腳本，程式會提示您輸入一個或多個使用者名稱：
+
+      python main.py
+
+   - On Windows you can also run the file directly (e.g., double-click `main.py` in Explorer) but note that a console window is required to provide input and to see progress. Running from a terminal is recommended so you can see any prompts or messages.
+
+     在 Windows 中也可以直接執行檔案（例如在檔案總管中雙擊 `main.py`），但需要有主控台視窗來提供輸入並檢視進度。建議在終端機中執行以便看到提示與輸出資訊。
+
+Notes / 注意事項:
+
+- The script reads API credentials from a `.env` file (see above). If credentials are missing, `main.py` will interactively prompt you to enter them and offer to save them to a local `.env` file.
+
+  腳本會從 `.env` 檔案讀取 API 金鑰（見上文）。若金鑰缺失，`main.py` 將互動式提示您輸入，並可選擇將其儲存到本地 `.env` 檔案。
+
+- Use the GUI (`python ui_app.py`) if you prefer a visual workflow and progress indicators. The CLI mode (`python main.py username...`) is great for automation and scripts. The interactive run is convenient for quick, one-off archives.
+
+  若偏好視覺化操作與進度顯示，請使用 GUI（`python ui_app.py`）。若要自動化或在腳本中使用，請採用 CLI（`python main.py username...`）。不帶參數直接執行的互動模式適合快速的單次備份。
+
+- Replace `username1`, `username2`, etc., with the Plurk usernames whose images and messages you want to download.
+
+  將 `username1`、`username2` 等替換為欲下載圖像與訊息的 Plurk 使用者帳號。
+
+  
+## Acknowledgment 致謝 
+
+Most of this project is based on the original Plurk Crawler by [freelze](https://github.com/freelze). I express my sincere thanks to freelze for their contribution to the Plurk Crawler project.
+
+本專案大部分基於 [freelze](https://github.com/freelze) 原始的 Plurk Crawler。我衷心感謝 freelze 對 Plurk Crawler 專案的貢獻。
+
+I edited the code using ChatGPT so that the script can now download all images, messages, and replies (including images and messages in the replies below) not just only download images in the Plurk Crawler.
+
+我使用 ChatGPT 編輯了程式碼，讓腳本現在可以下載所有文字訊息和圖片，包括回覆中的圖片和文字訊息，而不僅僅是 Plurk Crawler 中的圖片。
+
+## Disclaimer 免責聲明 (Disclaimer)
+
+I want to clarify that I do not own any of the code in this project. This project is based on the original Plurk Crawler by [freelze](https://github.com/freelze), and ChatGPT enhances it.
+
+我想澄清的是，我並不擁有本專案中的任何程式碼。這個專案大部分基於 [freelze](https://github.com/freelze) 的原始 Plurk Crawler，我使用 ChatGPT /GitHub Copilot 編輯。
