@@ -13,7 +13,7 @@ from PySide6.QtCore import (
     QTimer,
     QSignalBlocker,
 )
-from PySide6.QtGui import QColor, QFont, QDesktopServices, QCursor
+from PySide6.QtGui import QColor, QFont, QDesktopServices, QCursor, QTextOption
 from PySide6.QtWidgets import (
     QApplication,
     QFrame,
@@ -168,6 +168,7 @@ class MainWindow(QMainWindow):
         self.current_status_key = "status_idle"
         self._build_ui()
         self.set_language(self.current_language)
+        QTimer.singleShot(0, self.update_responsive_layout)
 
     def _build_ui(self):
         container = QWidget(objectName="CentralWidget")
@@ -204,8 +205,8 @@ class MainWindow(QMainWindow):
 
         layout.addLayout(top_bar)
 
-        hero_card = QFrame(objectName="HeroCard")
-        hero_layout = QHBoxLayout(hero_card)
+        self.hero_card = QFrame(objectName="HeroCard")
+        hero_layout = QHBoxLayout(self.hero_card)
         hero_layout.setSpacing(32)
         hero_layout.setContentsMargins(36, 32, 36, 32)
 
@@ -235,8 +236,8 @@ class MainWindow(QMainWindow):
 
         hero_layout.addLayout(hero_text_layout, stretch=2)
 
-        tips_card = QFrame(objectName="TipsCard")
-        tips_layout = QVBoxLayout(tips_card)
+        self.quote_card = QFrame(objectName="TipsCard")
+        tips_layout = QVBoxLayout(self.quote_card)
         tips_layout.setSpacing(12)
         tips_layout.setContentsMargins(20, 20, 20, 20)
 
@@ -248,11 +249,11 @@ class MainWindow(QMainWindow):
         tips_layout.addWidget(self.tips_content)
         tips_layout.addStretch(1)
 
-        hero_layout.addWidget(tips_card, stretch=1)
-        layout.addWidget(hero_card)
+        hero_layout.addWidget(self.quote_card, stretch=1)
+        layout.addWidget(self.hero_card)
 
-        card = QFrame(objectName="GlassCard")
-        card_layout = QVBoxLayout(card)
+        self.glass_card = QFrame(objectName="GlassCard")
+        card_layout = QVBoxLayout(self.glass_card)
         card_layout.setSpacing(24)
         card_layout.setContentsMargins(32, 32, 32, 32)
 
@@ -340,10 +341,10 @@ class MainWindow(QMainWindow):
         self.progress_bar.setVisible(False)
         card_layout.addWidget(self.progress_bar)
 
-        layout.addWidget(card)
+        layout.addWidget(self.glass_card)
 
-        log_card = QFrame(objectName="LogCard")
-        log_layout = QVBoxLayout(log_card)
+        self.log_card = QFrame(objectName="LogCard")
+        log_layout = QVBoxLayout(self.log_card)
         log_layout.setSpacing(16)
         log_layout.setContentsMargins(28, 28, 28, 28)
 
@@ -355,17 +356,26 @@ class MainWindow(QMainWindow):
         self.log_output.setObjectName("LogOutput")
         log_layout.addWidget(self.log_output)
 
-        layout.addWidget(log_card)
+        layout.addWidget(self.log_card)
         self.setCentralWidget(container)
 
         for widget, blur, offset, alpha in (
-            (hero_card, 60, 24, 150),
-            (card, 55, 28, 180),
-            (log_card, 45, 24, 160),
+            (self.hero_card, 60, 24, 150),
+            (self.glass_card, 55, 28, 180),
+            (self.log_card, 45, 24, 160),
         ):
             self._apply_shadow(widget, blur, offset, alpha)
 
         self._apply_styles()
+        self.responsive_labels = [
+            self.subtitle_label,
+            self.hero_description,
+            self.tips_content,
+        ]
+        self.log_output.setLineWrapMode(QPlainTextEdit.WidgetWidth)
+        default_option = self.log_output.document().defaultTextOption()
+        default_option.setWrapMode(QTextOption.WrapAtWordBoundaryOrAnywhere)
+        self.log_output.document().setDefaultTextOption(default_option)
 
     def _apply_shadow(self, widget, blur, offset, alpha):
         shadow = QGraphicsDropShadowEffect(self)
@@ -596,6 +606,34 @@ class MainWindow(QMainWindow):
 
         self.log_header.setText(texts["log_header"])
         self.status_label.setText(self.tr(self.current_status_key))
+        self.update_responsive_layout()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.update_responsive_layout()
+
+    def update_responsive_layout(self):
+        available_width = max(self.width() - 96, 640)
+        available_height = max(self.height() - 96, 540)
+
+        max_card_width = min(available_width, 1320)
+        for card in (self.hero_card, self.glass_card, self.log_card):
+            card.setMaximumWidth(max_card_width)
+
+        quote_width = max(int(max_card_width * 0.32), 260)
+        self.quote_card.setMinimumWidth(quote_width)
+        self.quote_card.setMaximumWidth(max(quote_width, 380))
+
+        wrap_width = max(int(max_card_width * 0.48), 360)
+        for label in getattr(self, "responsive_labels", []):
+            label.setMaximumWidth(wrap_width)
+
+        log_min_height = max(int(available_height * 0.32), 220)
+        self.log_output.setMinimumHeight(log_min_height)
+
+        wrap_pixels = max(int(max_card_width * 0.65), 540)
+        document = self.log_output.document()
+        document.setTextWidth(wrap_pixels)
 
     def on_language_changed(self, index):
         language_code = self.language_combo.itemData(index)
